@@ -76,7 +76,7 @@ public class IntListExercises {
             lst.first *= lst.first;
         }
 
-        boolean subtaskModified=squarePrimes(lst.rest); // ensure suqrePrimes() function is executed every time 
+        boolean subtaskModified=squarePrimes(lst.rest); // ensure suqrePrimes() function is executed every time
 
         return (currElemIsPrime || subtaskModified); // the or || will not execute last part if the former part is TRUE
     }
