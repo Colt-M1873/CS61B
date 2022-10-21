@@ -115,72 +115,25 @@ public class Model extends Observable {
         // changed local variable to true.
 
         board.setViewingPerspective(side);
-//        int dst1=0;
-//        for (int r = board.size() - 1; r >= 0; r--) {
-//            for (int c = 0; c < board.size(); c++) {
-//                Tile t = board.tile(c, r);
-//                if(t==null){
-//                    System.out.print(0);
-//                }else{
-//                    System.out.print(board.tile(c,r).value());
-//                    if (t.value()==2){
-//                        System.out.println("row"+t.row());
-//                        System.out.println("r"+r);
-//                        dst1=mergeDestination1(c,r,t.value(),side);
-//                        board.move(c, 3, t);
-//                    }
-//                }
-//            }
-//            System.out.println();
-//        }
-//
-//        System.out.println(dst1);
-//
-//        System.out.println();
-//        for (int r = board.size() - 1; r >= 0; r--) {
-//            for (int c = 0; c < board.size(); c++) {
-//                Tile t = board.tile(c, r);
-//                if(t==null){
-//                    System.out.print(0);
-//                }else{
-//                    System.out.print(board.tile(c,r).value());
-//                }
-//            }
-//            System.out.println();
-//        }
-
-
-
-
-
-        boolean[][] mergedGrid=new boolean[board.size()][board.size()];
+        // the challenge is to control that one time, one merge, do not merge recursively
+        // so a mergedGrid recording those grids who have already been merged is useful
+        boolean[][] mergedGrid=new boolean[board.size()][board.size()]; // record which grids have been merged
         for (int c = 0; c < board.size(); c++) {
             for (int r = board.size()-1; r >=0; r--) {
                 Tile t = board.tile(c, r);
                 if (t != null) {
-                    int dst=mergeDestination1(c,r,t.value(),side);//不能传t,因为t.row和t.col是绝对的，应该直接传r和c
+                    int dst=getDestination(c,r,t.value());//不能传t,因为t.row和t.col是绝对坐标，而当下是setViewingPerspective之后的坐标，二者是冲突的，所所以应该直接传r和c
                     System.out.print(dst);
-                    if(mergedGrid[c][dst]==false) {
-                        boolean merged = board.move(c, dst, t);
-                        if (dst!=r){
-                            changed = true;
-                        }
-                        if (merged){
-                            mergedGrid[c][dst]=true;
-                            score+=t.value()*2;
-                        }
-                    }else{
-                        if(dst-1>=0) {
-                            boolean merged = board.move(c, dst - 1, t);
-                            if (dst-1!=r){
-                                changed = true;
-                            }
-                            changed = true;
-                            if (merged) {
-                                mergedGrid[c][dst] = true;
-                                score += t.value() * 2;
-                            }
-                        }
+                    if(mergedGrid[c][dst]!=false) {
+                        dst=Math.max(dst-1,0); // if the destination grid has already merged, then relocate to next adjacent grid.
+                    }
+                    boolean merged = board.move(c, dst, t);
+                    if (dst!=r){
+                        changed = true;
+                    }
+                    if (merged){
+                        mergedGrid[c][dst]=true; // set merge matrix
+                        score+=t.value()*2;
                     }
                 }
             }
@@ -194,12 +147,12 @@ public class Model extends Observable {
         return changed;
     }
 
-    // the merge and add value method has already been implemented
-    // the next challenge is to control that one time, one merge, do not merge recursively
-    private int mergeDestination1(int c,int r,int val,Side side){
-        board.setViewingPerspective(side);
-        int dest=r;
-        r+=1;
+    // the merge and add value method has already been implemented by skeleton code
+    // getDestination is used to check current row (in the view of Side.NORTH) and find destination row to move into.
+    // input row and col of current board(with view set to designated direction) and the val of that tile on board(c,r)
+    private int getDestination(int c,int r,int val){
+        int dest=r;// destination
+        r+=1; // start from the next row of current tile
         for (;r<board.size();r++){
             if( board.tile(c,r)!=null){
                 if (board.tile(c,r).value()==val){
@@ -215,27 +168,6 @@ public class Model extends Observable {
         }
         return dest;
     }
-//    // the merge and add value method has already been implemented
-//    // the next challenge is to control that one time, one merge, do not merge recursively
-//    private int mergeDestination(Tile t,Side side){
-//        board.setViewingPerspective(side);
-//        int dest=t.row(),c=t.col();
-//
-//        for (int r=t.row()+1;r<board.size();r++){
-//            if( board.tile(c,r)!=null){
-//                if (board.tile(c,r).value()==t.value()){
-//                    return r;// same value, merge and replace
-//                }else{
-//                    return r-1;// different value, move to adjacent grid
-//                }
-//            }else{
-//                if (r== board.size()-1){
-//                    return r;// all empty, move to top
-//                }
-//            }
-//        }
-//        return dest;
-//    }
 
 
     /** Checks if the game is over and sets the gameOver variable
