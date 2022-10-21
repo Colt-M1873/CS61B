@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author CyberDJ
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -113,6 +113,26 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(Side.NORTH);
+        boolean[] columnHasMerged=new boolean[board.size()];
+//        for(boolean b:columnHasMerged){
+//            System.out.print(b);
+//        }
+
+//        if(side == Side.NORTH) {
+            for (int c = 0; c < board.size(); c++) {
+                for (int r = 0; r < board.size(); r++) {
+                    Tile t = board.tile(c, r);
+                    if (t != null) {
+                        int dst=mergeDestination(t);
+                        System.out.print(dst);
+                        board.move(c, dst, t);
+                        changed = true;
+                        score+=1;
+                    }
+                }
+            }
+//        }
 
         checkGameOver();
         if (changed) {
@@ -120,6 +140,27 @@ public class Model extends Observable {
         }
         return changed;
     }
+
+    // the merge and add value method has already been implemented
+    // the next challenge is to control that one time, one merge, do not merge recursively
+    private int mergeDestination(Tile t){
+        int dest=t.row(),c=t.col();
+        for (int r=t.row()+1;r<board.size();r++){
+            if( board.tile(c,r)!=null){
+                if (board.tile(c,r).value()==t.value()){
+                    return r;// same value, merge and replace
+                }else{
+                    return r-1;// different value, move to adjacent grid
+                }
+            }else{
+                if (r== board.size()-1){
+                    return r;// all empty, move to top
+                }
+            }
+        }
+        return dest;
+    }
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
@@ -138,6 +179,11 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for (int i=0;i<b.size();i++){
+            for (int j=0;j<b.size();j++){
+                if (b.tile(b.size()-1-i,j)==null){return true;}
+            }
+        }
         return false;
     }
 
@@ -148,6 +194,11 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for (int i=0;i<b.size();i++){
+            for (int j=0;j<b.size();j++){
+                if (b.tile(b.size()-1-i,j)!=null && b.tile(b.size()-1-i,j).value()==MAX_PIECE){return true;}
+            }
+        }
         return false;
     }
 
@@ -159,6 +210,26 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        if (emptySpaceExists(b)) {
+            return true;
+        }
+        int[][] dir = new int[][]{{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
+                int X = b.size() - 1 - i; // convert array index to coordinate on the board
+                int Y = j;
+                int newX, newY;
+                for (int d = 0; d < dir.length; d++) {
+                    newX = X + dir[d][0];
+                    newY = Y + dir[d][1];
+                    if (newX >= 0 && newX < b.size() && newY >= 0 && newY < b.size()) {
+                        if (b.tile(X, Y).value() == b.tile(newX, newY).value()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
