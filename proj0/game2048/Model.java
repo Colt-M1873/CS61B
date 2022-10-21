@@ -113,41 +113,96 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-        board.setViewingPerspective(Side.NORTH);
-        boolean[] columnHasMerged=new boolean[board.size()];
-//        for(boolean b:columnHasMerged){
-//            System.out.print(b);
+
+        board.setViewingPerspective(side);
+//        int dst1=0;
+//        for (int r = board.size() - 1; r >= 0; r--) {
+//            for (int c = 0; c < board.size(); c++) {
+//                Tile t = board.tile(c, r);
+//                if(t==null){
+//                    System.out.print(0);
+//                }else{
+//                    System.out.print(board.tile(c,r).value());
+//                    if (t.value()==2){
+//                        System.out.println("row"+t.row());
+//                        System.out.println("r"+r);
+//                        dst1=mergeDestination1(c,r,t.value(),side);
+//                        board.move(c, 3, t);
+//                    }
+//                }
+//            }
+//            System.out.println();
+//        }
+//
+//        System.out.println(dst1);
+//
+//        System.out.println();
+//        for (int r = board.size() - 1; r >= 0; r--) {
+//            for (int c = 0; c < board.size(); c++) {
+//                Tile t = board.tile(c, r);
+//                if(t==null){
+//                    System.out.print(0);
+//                }else{
+//                    System.out.print(board.tile(c,r).value());
+//                }
+//            }
+//            System.out.println();
 //        }
 
-//        if(side == Side.NORTH) {
-            for (int c = 0; c < board.size(); c++) {
-                for (int r = 0; r < board.size(); r++) {
-                    Tile t = board.tile(c, r);
-                    if (t != null) {
-                        int dst=mergeDestination(t);
-                        System.out.print(dst);
-                        board.move(c, dst, t);
-                        changed = true;
-                        score+=1;
+
+
+
+
+        boolean[][] mergedGrid=new boolean[board.size()][board.size()];
+        for (int c = 0; c < board.size(); c++) {
+            for (int r = board.size()-1; r >=0; r--) {
+                Tile t = board.tile(c, r);
+                if (t != null) {
+                    int dst=mergeDestination1(c,r,t.value(),side);//不能传t,因为t.row和t.col是绝对的，应该直接传r和c
+                    System.out.print(dst);
+                    if(mergedGrid[c][dst]==false) {
+                        boolean merged = board.move(c, dst, t);
+                        if (dst!=r){
+                            changed = true;
+                        }
+                        if (merged){
+                            mergedGrid[c][dst]=true;
+                            score+=t.value()*2;
+                        }
+                    }else{
+                        if(dst-1>=0) {
+                            boolean merged = board.move(c, dst - 1, t);
+                            if (dst-1!=r){
+                                changed = true;
+                            }
+                            changed = true;
+                            if (merged) {
+                                mergedGrid[c][dst] = true;
+                                score += t.value() * 2;
+                            }
+                        }
                     }
                 }
             }
-//        }
+        }
 
         checkGameOver();
         if (changed) {
             setChanged();
         }
+        board.setViewingPerspective(Side.NORTH);
         return changed;
     }
 
     // the merge and add value method has already been implemented
     // the next challenge is to control that one time, one merge, do not merge recursively
-    private int mergeDestination(Tile t){
-        int dest=t.row(),c=t.col();
-        for (int r=t.row()+1;r<board.size();r++){
+    private int mergeDestination1(int c,int r,int val,Side side){
+        board.setViewingPerspective(side);
+        int dest=r;
+        r+=1;
+        for (;r<board.size();r++){
             if( board.tile(c,r)!=null){
-                if (board.tile(c,r).value()==t.value()){
+                if (board.tile(c,r).value()==val){
                     return r;// same value, merge and replace
                 }else{
                     return r-1;// different value, move to adjacent grid
@@ -160,6 +215,27 @@ public class Model extends Observable {
         }
         return dest;
     }
+//    // the merge and add value method has already been implemented
+//    // the next challenge is to control that one time, one merge, do not merge recursively
+//    private int mergeDestination(Tile t,Side side){
+//        board.setViewingPerspective(side);
+//        int dest=t.row(),c=t.col();
+//
+//        for (int r=t.row()+1;r<board.size();r++){
+//            if( board.tile(c,r)!=null){
+//                if (board.tile(c,r).value()==t.value()){
+//                    return r;// same value, merge and replace
+//                }else{
+//                    return r-1;// different value, move to adjacent grid
+//                }
+//            }else{
+//                if (r== board.size()-1){
+//                    return r;// all empty, move to top
+//                }
+//            }
+//        }
+//        return dest;
+//    }
 
 
     /** Checks if the game is over and sets the gameOver variable
