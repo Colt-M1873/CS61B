@@ -46,7 +46,7 @@ public class LinkedListDeque<T> {
     }
 
     public void addLast(T item){
-        System.out.println("addLast");
+//        System.out.println("addLast");
         DListNode itemNode=new DListNode(item, null,null);
         DListNode tmpPrev=sentinel.prev;
 
@@ -97,7 +97,7 @@ public class LinkedListDeque<T> {
         return lastTmp.item;
     }
 
-    public T getIndex(int index){
+    public T get(int index){
         if(index>=size || index <0 ){return null;}
         DListNode ret=sentinel.next;
         while(index>0){

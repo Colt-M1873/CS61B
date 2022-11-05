@@ -144,7 +144,7 @@ public class myArrayDequeTest {
         }
 
         for (int i = 0; i < 5; i++) {
-            assertEquals("Should have the same value", i, (double) lld1.getIndex(i), 0.0);
+            assertEquals("Should have the same value", i, (double) lld1.get(i), 0.0);
         }
 
     }

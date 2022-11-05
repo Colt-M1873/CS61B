@@ -91,7 +91,7 @@ public class ArrayDeque<T> {
 
     }
 
-    public T getIndex(int index){
+    public T get(int index){
         if(index>=(right-left) || index<0){return null;}
         return arr[left+index];
     }
