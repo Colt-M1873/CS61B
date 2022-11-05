@@ -16,7 +16,7 @@ public class ArrayDeque<T> {
 
     /**enlarge array and relocate left right pointer*/
     private void enlarge(){
-        System.out.println("enlarge");
+//        System.out.println("enlarge");
         T[] newArr=(T[])new Object[2* arr.length];
         int newLeft=arr.length-(right-left)/2;
         int newRight=newLeft + (right-left);
@@ -26,11 +26,11 @@ public class ArrayDeque<T> {
         arr=newArr;
     }
     private void shrink(){
-        System.out.println("shrink");
+//        System.out.println("shrink");
     }
 
     public void addFirst(T item){
-        System.out.println("addFirst");
+//        System.out.println("addFirst");
         if(left>0){
             left--;
             arr[left]=item;

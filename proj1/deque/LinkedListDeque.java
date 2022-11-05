@@ -33,7 +33,7 @@ public class LinkedListDeque<T> {
     }
 
     public void addFirst(T item){
-        System.out.println("addFirst");
+//        System.out.println("addFirst");
         DListNode itemNode=new DListNode(item, null,null);
         DListNode tmpNext=sentinel.next;
 
@@ -71,7 +71,7 @@ public class LinkedListDeque<T> {
     }
 
     public T removeFirst(){
-        System.out.println("removeFirst");
+//        System.out.println("removeFirst");
         if(size==0){return null;}
         DListNode firstTmp=sentinel.next;
 
@@ -84,7 +84,7 @@ public class LinkedListDeque<T> {
         return firstTmp.item;
     }
     public T removeLast(){
-        System.out.println("removeLast");
+//        System.out.println("removeLast");
         if(size==0){return null;}
         DListNode lastTmp=sentinel.prev;
 
