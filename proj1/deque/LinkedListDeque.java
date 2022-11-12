@@ -107,6 +107,4 @@ public class LinkedListDeque<T> {
         return ret.item;
     }
 
-
-
 }

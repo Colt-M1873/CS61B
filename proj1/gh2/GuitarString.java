@@ -4,6 +4,8 @@ package gh2;
 // import deque.Deque;
 // TODO: maybe more imports
 
+import edu.princeton.cs.algs4.StdAudio;
+
 //Note: This file will not compile until you complete the Deque implementations
 public class GuitarString {
     /** Constants. Do not change. In case you're curious, the keyword final
@@ -51,5 +53,12 @@ public class GuitarString {
         // TODO: Return the correct thing.
         return 0;
     }
+
+    public static void main(String[] args) {
+        for(int i=0;i<100000;i++){
+            StdAudio.play(0.333);
+        }
+    }
+
 }
     // TODO: Remove all comments that say TODO when you're done.
